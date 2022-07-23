@@ -11,8 +11,11 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Command {
+    /// List all the paths in the registry
     List,
+    /// Push a string to the registry
     Push(PushArg),
+    /// Remove an element that matches the input - Ex: "Alacritty" will remove "C:\Program Files\Alacritty\"
     Remove(RemoveArg),
 }
 
