@@ -36,12 +36,35 @@ impl Path {
     }
 
     pub fn get_value_as_vec(&self) -> Result<Vec<String>, std::io::Error> {
-        self.get_value()
-            .map(|value| value.split(";").map(|s| s.to_string()).collect())
+        self.get_value().map(|value| {
+            value
+                .split(";")
+                .map(|s| s.to_string())
+                .filter(|v| !v.is_empty())
+                .collect()
+        })
     }
 
     pub fn parse_vec_to_value(&self, array: &Vec<String>) -> String {
-        array.join(";")
+        let res = array.join(";");
+        match array.last() {
+            Some(last) => {
+                if last.ends_with("\\") {
+                    res + ";"
+                } else {
+                    res
+                }
+            }
+            None => res,
+        }
+    }
+
+    pub fn push_value(&self, value: String) -> Result<(), std::io::Error> {
+        let mut array = self.get_value_as_vec()?;
+        println!("{:?}", array);
+        array.push(value);
+        let values = self.parse_vec_to_value(&array);
+        self.set_value(values)
     }
 }
 
@@ -55,7 +78,6 @@ mod test {
         let mock_values = vec![
             r#"C:\Program Files\Alacritty\"#.to_string(),
             r#"C:\Python310\Scripts\"#.to_string(),
-            "".to_string(),
         ];
         let parsed_vec_to_value = path.parse_vec_to_value(&mock_values);
         assert_eq!(str_values, parsed_vec_to_value);
