@@ -17,6 +17,8 @@ enum Command {
     Push(PushArg),
     /// Remove an element that matches the input - Ex: "Alacritty" will remove "C:\Program Files\Alacritty\"
     Remove(RemoveArg),
+    /// Remove the last element in the registry
+    Pop,
 }
 
 #[derive(Args, Debug)]
@@ -47,6 +49,9 @@ fn main() {
         }
         Remove(data) => {
             path.remove_value(data.pattern.clone()).unwrap();
+        }
+        Pop => {
+            path.pop().unwrap();
         }
     }
 }

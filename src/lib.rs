@@ -76,6 +76,12 @@ impl Path {
         values.remove(item_idx);
         self.set_value(self.parse_vec_to_value(&values))
     }
+
+    pub fn pop(&self) -> Result<(), std::io::Error> {
+        let mut values = self.get_value_as_vec()?;
+        values.pop();
+        self.set_value(self.parse_vec_to_value(&values))
+    }
 }
 
 #[cfg(test)]
