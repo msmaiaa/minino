@@ -62,14 +62,16 @@ impl Path {
     }
 
     pub fn push_value(&self, value: String) -> Result<(), std::io::Error> {
+        let value_without_quotes = value.replace("\"", "").replace("'", "");
         let mut array = self.get_value_as_vec()?;
-        array.push(value);
+        array.push(value_without_quotes);
         let values = self.parse_vec_to_value(&array);
         self.set_value(values)
     }
 
     pub fn remove_value(&self, substr: String) -> Result<(), std::io::Error> {
         let mut values = self.get_value_as_vec()?;
+        //	TODO: handle duplicate values
         let item_idx = str_utils::find_unique_substr_in_vec(&values, &substr);
         values.remove(item_idx);
         self.set_value(self.parse_vec_to_value(&values))
